@@ -9,7 +9,8 @@ export const rateLimiter = rateLimit({
   max: 5,
   keyGenerator: (req: any) => {
     const oathisReq = req as OathisRequest;
-    return oathisReq.subjectId || req.ip || 'unknown';
+    return oathisReq.subjectId || (req as Request).header('x-forwarded-for') || (req as Request).socket.remoteAddress || 'unknown';
   },
   message: 'Too many requests, please try again later.',
+  validate: { trustProxy: false, xForwardedForHeader: false }
 });
