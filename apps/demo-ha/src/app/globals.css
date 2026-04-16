@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@source "../../../../packages/ui/src";
 
 @theme {
   --color-titanium-deep: #0A0E17;

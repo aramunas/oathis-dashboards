@@ -6,40 +6,19 @@ export class ECGReplayEngine {
   private interval: NodeJS.Timeout | null = null;
 
   async load(subjectId: string, sessionId?: string): Promise<void> {
-    // Fetch all ecg_samples for this session, ordered by timestamp
-    let query = supabase
-      .from('atlas_ecg_samples')
-      .select('session_id, samples')
-      .eq('subject_id', subjectId)
-      .order('timestamp_ms', { ascending: true });
+    try {
+      const response = await fetch(`/api/replay?subject_id=${subjectId}${sessionId ? `&session_id=${sessionId}` : ''}`);
+      const result = await response.json();
+      const data = result.data;
       
-    if (sessionId) {
-      query = query.eq('session_id', sessionId);
-    } else {
-      // Pick the first session_id we find to filter by
-      const { data: sData } = await supabase
-        .from('atlas_ecg_samples')
-        .select('session_id')
-        .eq('subject_id', subjectId)
-        .limit(1);
-      
-      if (sData && sData.length > 0) {
-        query = query.eq('session_id', sData[0].session_id);
+      if (data && data.length > 0) {
+        this.sessionData = data.map((row: any) => row.samples);
+        console.log(`[OATHIS] ReplayEngine loaded ${this.sessionData.length} batches for subject ${subjectId}`);
+      } else {
+        console.warn(`[OATHIS] ReplayEngine found no data for subject ${subjectId}, session ${sessionId}`);
       }
-    }
-
-    const { data, error } = await query;
-
-    if (error) {
+    } catch (error) {
       console.error('[OATHIS] ReplayEngine load error:', error);
-      return;
-    }
-
-    if (data && data.length > 0) {
-      this.sessionData = data.map(row => row.samples);
-      console.log(`[OATHIS] ReplayEngine loaded ${this.sessionData.length} batches for subject ${subjectId}`);
-    } else {
-      console.warn(`[OATHIS] ReplayEngine found no data for subject ${subjectId}, session ${sessionId}`);
     }
   }
 
