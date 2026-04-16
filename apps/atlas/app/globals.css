@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+@theme {
+  --color-titanium-deep: #0A0E17;
+  --color-titanium-card: #111827;
+  --color-titanium-glass: rgba(17, 24, 39, 0.7);
+  --color-titanium-border: rgba(255, 255, 255, 0.08);
+  --color-copper: #D35400;
+  --color-ember: #E89040;
+  --color-mint: #60C8A8;
+  --color-cream: #F2ECE4;
+  --color-parchment: #D9C2B2;
+  --font-display: "DM Sans", sans-serif;
+  --font-body: "Plus Jakarta Sans", sans-serif;
+  --font-data: "JetBrains Mono", monospace;
+  --blur-glass: 20px;
+}
+
+@layer utilities {
+  .glass-card {
+    background: rgba(17, 24, 39, 0.7);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+  }
+}
+
+body {
+  background-color: var(--color-titanium-deep);
+  color: var(--color-cream);
+  font-family: var(--font-body);
+}
