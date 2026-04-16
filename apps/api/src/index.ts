@@ -37,8 +37,13 @@ try {
 
   app.use(express.json());
 
+  // Root health endpoint for Railway default checks
   app.get('/', (req: any, res: any) => {
     res.status(200).send('OK');
+  });
+
+  app.get('/health', (req: any, res: any) => {
+    res.json({ status: 'ok', version: '0.1.0' });
   });
 
   app.get('/api/health', (req: any, res: any) => {

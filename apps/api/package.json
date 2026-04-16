@@ -2,11 +2,11 @@
   "name": "api",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "dist/index.js",
   "scripts": {
     "dev": "nodemon --exec ts-node src/index.ts",
     "build": "echo 'No build step'",
-    "start": "node server.js"
+    "start": "node dist/index.js"
   },
   "keywords": [],
   "author": "",

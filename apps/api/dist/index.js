@@ -65,8 +65,12 @@ try {
         }
     }));
     app.use(express.json());
+    // Root health endpoint for Railway default checks
     app.get('/', (req, res) => {
         res.status(200).send('OK');
+    });
+    app.get('/health', (req, res) => {
+        res.json({ status: 'ok', version: '0.1.0' });
     });
     app.get('/api/health', (req, res) => {
         res.json({ status: 'ok', supabase: 'connected', clerk: 'configured' });
