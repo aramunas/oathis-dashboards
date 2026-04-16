@@ -5,7 +5,8 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev --parallel",
-    "lint": "turbo run lint"
+    "lint": "turbo run lint",
+    "start": "node apps/api/dist/index.js"
   },
   "devDependencies": {
     "turbo": "latest"
