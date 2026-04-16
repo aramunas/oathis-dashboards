@@ -34,7 +34,7 @@ var __importStar = (this && this.__importStar) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 const http = __importStar(require("http"));
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3000;
 try {
     const express = require('express');
     const cors = require('cors');

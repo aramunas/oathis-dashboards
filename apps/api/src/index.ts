@@ -1,6 +1,6 @@
 import * as http from 'http';
 
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3000;
 
 try {
   const express = require('express');
