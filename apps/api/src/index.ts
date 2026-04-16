@@ -1,31 +1,31 @@
-import express, { Request, Response, NextFunction } from "express";
-import cors from "cors";
-import dotenv from "dotenv";
-import path from "path";
-
-// Load shared .env for local development
-if (process.env.NODE_ENV !== 'production') {
-  dotenv.config({ path: path.resolve(__dirname, '../../../../../.env.shared') });
-}
-dotenv.config();
+import * as http from 'http';
 
 const port = process.env.PORT || 3001;
 
 try {
-  const ecgRouter = require("./routes/ecg").default;
-  const ouraRouter = require("./routes/oura").default;
-  require("./workers/oura-sync");
+  const express = require('express');
+  const cors = require('cors');
+  const dotenv = require('dotenv');
+  const path = require('path');
+
+  if (process.env.NODE_ENV !== 'production') {
+    dotenv.config({ path: path.resolve(__dirname, '../../../../../.env.shared') });
+  }
+  dotenv.config();
+
+  const ecgRouter = require('./routes/ecg').default;
+  const ouraRouter = require('./routes/oura').default;
+  require('./workers/oura-sync');
 
   const app = express();
 
-  // CORS configuration based on Phase 2 requirements
   const allowedOrigins = [
     'https://demo-ha.oathis.com',
     'https://atlas.oathis.com'
   ];
 
   app.use(cors({
-    origin: (origin, callback) => {
+    origin: (origin: string, callback: any) => {
       if (!origin) return callback(null, true);
       if (allowedOrigins.includes(origin) || origin.startsWith('http://localhost:')) {
         callback(null, true);
@@ -37,42 +37,37 @@ try {
 
   app.use(express.json());
 
-  // Root health endpoint for Railway default checks
-  app.get("/", (req: Request, res: Response) => {
-    res.status(200).send("OK");
+  app.get('/', (req: any, res: any) => {
+    res.status(200).send('OK');
   });
 
-  // Health endpoint (Task 1.4)
-  app.get("/api/health", (req: Request, res: Response) => {
-    res.json({ status: "ok", supabase: "connected", clerk: "configured" });
+  app.get('/api/health', (req: any, res: any) => {
+    res.json({ status: 'ok', supabase: 'connected', clerk: 'configured' });
   });
 
-  // API Routes
-  app.use("/api/ecg", ecgRouter);
-  app.use("/api/oura", ouraRouter);
+  app.use('/api/ecg', ecgRouter);
+  app.use('/api/oura', ouraRouter);
 
-  // Global Error Handler
-  app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  app.use((err: any, req: any, res: any, next: any) => {
     console.error('[OATHIS] Unhandled Error:', err);
     res.status(500).json({ error: 'Internal Server Error' });
   });
 
-  app.listen(Number(port), "0.0.0.0", () => {
+  app.listen(Number(port), '0.0.0.0', () => {
     console.log(`[OATHIS] Railway Backend running on port ${port}`);
   });
 
-} catch (startupError: any) {
-  console.error("STARTUP ERROR:", startupError);
-  // Emergency fallback server to report the error
-  const fallbackApp = express();
-  fallbackApp.all("*", (req: Request, res: Response) => {
-    res.status(500).json({ 
-      error: "API failed to start", 
-      message: startupError?.message || String(startupError),
-      stack: startupError?.stack
-    });
+} catch (err: any) {
+  console.error('STARTUP ERROR:', err);
+  const server = http.createServer((req, res) => {
+    res.writeHead(500, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({
+      error: 'API failed to start',
+      message: err?.message || String(err),
+      stack: err?.stack
+    }));
   });
-  fallbackApp.listen(Number(port), "0.0.0.0", () => {
+  server.listen(Number(port), '0.0.0.0', () => {
     console.log(`[OATHIS] Emergency Backend running on port ${port}`);
   });
 }
