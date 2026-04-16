@@ -4,8 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { SubjectPanel, SystemStatus, OathisBadge } from '@oathis/ui';
 import { useReplayStream, useSubjects } from '@oathis/data';
 
-function SubjectRow({ subject, sessionId, defaultHr, defaultHrv, defaultSpo2, defaultSleep, defaultReadiness, defaultSkinTemp }: any) {
-  const { buffer, isConnected } = useReplayStream(subject.id, sessionId);
+function SubjectRow({ subject, defaultHr, defaultHrv, defaultSpo2, defaultSleep, defaultReadiness, defaultSkinTemp }: any) {
+  const { buffer, isConnected } = useReplayStream(subject.id);
   
   return (
     <SubjectPanel 
@@ -49,9 +49,9 @@ function DemoDashboard() {
 
       {/* Subjects */}
       <main className="flex flex-col gap-4">
-        {subjects[0] && <SubjectRow subject={subjects[0]} sessionId="demo-session-1" defaultHr={72} defaultHrv={45} defaultSpo2={98} defaultSleep={85} defaultReadiness={88} defaultSkinTemp={+0.2} />}
-        {subjects[1] && <SubjectRow subject={subjects[1]} sessionId="demo-session-2" defaultHr={65} defaultHrv={52} defaultSpo2={99} defaultSleep={91} defaultReadiness={92} defaultSkinTemp={-0.1} />}
-        {subjects[2] && <SubjectRow subject={subjects[2]} sessionId="demo-session-3" defaultHr={88} defaultHrv={30} defaultSpo2={96} defaultSleep={70} defaultReadiness={65} defaultSkinTemp={+0.5} />}
+        {subjects[0] && <SubjectRow subject={subjects[0]} defaultHr={72} defaultHrv={45} defaultSpo2={98} defaultSleep={85} defaultReadiness={88} defaultSkinTemp={+0.2} />}
+        {subjects[1] && <SubjectRow subject={subjects[1]} defaultHr={65} defaultHrv={52} defaultSpo2={99} defaultSleep={91} defaultReadiness={92} defaultSkinTemp={-0.1} />}
+        {subjects[2] && <SubjectRow subject={subjects[2]} defaultHr={88} defaultHrv={30} defaultSpo2={96} defaultSleep={70} defaultReadiness={65} defaultSkinTemp={+0.5} />}
       </main>
 
       {/* Status */}

@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { CircularBuffer } from '@oathis/ui';
 import { ECGReplayEngine } from './replay';
 
-export function useReplayStream(subjectId: string, sessionId: string) {
+export function useReplayStream(subjectId: string, sessionId?: string) {
   const [isConnected, setIsConnected] = useState(false);
   const bufferRef = useRef(new CircularBuffer()); 
   const engineRef = useRef<ECGReplayEngine | null>(null);

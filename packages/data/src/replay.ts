@@ -5,14 +5,30 @@ export class ECGReplayEngine {
   private playbackIndex = 0;
   private interval: NodeJS.Timeout | null = null;
 
-  async load(subjectId: string, sessionId: string): Promise<void> {
+  async load(subjectId: string, sessionId?: string): Promise<void> {
     // Fetch all ecg_samples for this session, ordered by timestamp
-    const { data, error } = await supabase
+    let query = supabase
       .from('atlas_ecg_samples')
-      .select('samples')
+      .select('session_id, samples')
       .eq('subject_id', subjectId)
-      .eq('session_id', sessionId)
       .order('timestamp_ms', { ascending: true });
+      
+    if (sessionId) {
+      query = query.eq('session_id', sessionId);
+    } else {
+      // Pick the first session_id we find to filter by
+      const { data: sData } = await supabase
+        .from('atlas_ecg_samples')
+        .select('session_id')
+        .eq('subject_id', subjectId)
+        .limit(1);
+      
+      if (sData && sData.length > 0) {
+        query = query.eq('session_id', sData[0].session_id);
+      }
+    }
+
+    const { data, error } = await query;
 
     if (error) {
       console.error('[OATHIS] ReplayEngine load error:', error);
