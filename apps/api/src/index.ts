@@ -9,52 +9,70 @@ if (process.env.NODE_ENV !== 'production') {
 }
 dotenv.config();
 
-import ecgRouter from "./routes/ecg";
-import ouraRouter from "./routes/oura";
-import "./workers/oura-sync";
-
-const app = express();
 const port = process.env.PORT || 3001;
 
-// CORS configuration based on Phase 2 requirements
-const allowedOrigins = [
-  'https://demo-ha.oathis.com',
-  'https://atlas.oathis.com'
-];
+try {
+  const ecgRouter = require("./routes/ecg").default;
+  const ouraRouter = require("./routes/oura").default;
+  require("./workers/oura-sync");
 
-app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin) || origin.startsWith('http://localhost:')) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
+  const app = express();
+
+  // CORS configuration based on Phase 2 requirements
+  const allowedOrigins = [
+    'https://demo-ha.oathis.com',
+    'https://atlas.oathis.com'
+  ];
+
+  app.use(cors({
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin) || origin.startsWith('http://localhost:')) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
     }
-  }
-}));
+  }));
 
-app.use(express.json());
+  app.use(express.json());
 
-// Root health endpoint for Railway default checks
-app.get("/", (req, res) => {
-  res.status(200).send("OK");
-});
+  // Root health endpoint for Railway default checks
+  app.get("/", (req: Request, res: Response) => {
+    res.status(200).send("OK");
+  });
 
-// Health endpoint (Task 1.4)
-app.get("/api/health", (req, res) => {
-  res.json({ status: "ok", supabase: "connected", clerk: "configured" });
-});
+  // Health endpoint (Task 1.4)
+  app.get("/api/health", (req: Request, res: Response) => {
+    res.json({ status: "ok", supabase: "connected", clerk: "configured" });
+  });
 
-// API Routes
-app.use("/api/ecg", ecgRouter);
-app.use("/api/oura", ouraRouter);
+  // API Routes
+  app.use("/api/ecg", ecgRouter);
+  app.use("/api/oura", ouraRouter);
 
-// Global Error Handler
-app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-  console.error('[OATHIS] Unhandled Error:', err);
-  res.status(500).json({ error: 'Internal Server Error' });
-});
+  // Global Error Handler
+  app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+    console.error('[OATHIS] Unhandled Error:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  });
 
-app.listen(Number(port), "0.0.0.0", () => {
-  console.log(`[OATHIS] Railway Backend running on port ${port}`);
-});
+  app.listen(Number(port), "0.0.0.0", () => {
+    console.log(`[OATHIS] Railway Backend running on port ${port}`);
+  });
+
+} catch (startupError: any) {
+  console.error("STARTUP ERROR:", startupError);
+  // Emergency fallback server to report the error
+  const fallbackApp = express();
+  fallbackApp.all("*", (req: Request, res: Response) => {
+    res.status(500).json({ 
+      error: "API failed to start", 
+      message: startupError?.message || String(startupError),
+      stack: startupError?.stack
+    });
+  });
+  fallbackApp.listen(Number(port), "0.0.0.0", () => {
+    console.log(`[OATHIS] Emergency Backend running on port ${port}`);
+  });
+}
