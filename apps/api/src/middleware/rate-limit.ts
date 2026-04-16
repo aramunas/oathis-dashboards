@@ -1,6 +1,6 @@
 import rateLimit from 'express-rate-limit';
 import { Request } from 'express';
-import { OathisRequestContext } from '@oathis/oathis-core';
+import { OathisRequestContext } from '../types';
 
 export interface OathisRequest extends Request, OathisRequestContext {}
 

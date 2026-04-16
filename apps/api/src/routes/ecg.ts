@@ -2,7 +2,7 @@ import { Router, Request, Response, RequestHandler } from 'express';
 import { createHash } from 'crypto';
 import { supabase } from '../lib/supabase';
 import { oathisStack } from '../middleware/oathis';
-import { OathisRequestContext } from '@oathis/oathis-core';
+import { OathisRequestContext } from '../types';
 
 export interface OathisRequest extends Request, OathisRequestContext {}
 

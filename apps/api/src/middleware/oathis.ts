@@ -1,6 +1,6 @@
 import { Response, NextFunction, Request } from 'express';
 import { AuthObject, clerkMiddleware, requireAuth } from '@clerk/express';
-import { OathisRequestContext } from '@oathis/oathis-core';
+import { OathisRequestContext } from '../types';
 import { dataClassifier } from './classify';
 import { schemaValidator } from './validate';
 import { auditLogger } from './audit';

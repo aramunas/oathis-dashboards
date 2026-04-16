@@ -1,5 +1,5 @@
 import { Response, NextFunction, Request } from 'express';
-import { OathisRequestContext } from '@oathis/oathis-core';
+import { OathisRequestContext } from '../types';
 
 export interface OathisRequest extends Request, OathisRequestContext {}
 
