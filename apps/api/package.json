@@ -1,7 +1,7 @@
 {
   "name": "api",
-  "version": "1.0.0",
-  "description": "",
+  "version": "1.0.1",
+  "description": "Trigger Railway deployment",
   "main": "dist/index.js",
   "scripts": {
     "dev": "nodemon --exec ts-node src/index.ts",
