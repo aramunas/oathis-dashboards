@@ -65,12 +65,18 @@ try {
 } catch (err: any) {
   console.error('STARTUP ERROR:', err);
   const server = http.createServer((req, res) => {
+    if (req.url === '/api/health' || req.url === '/health' || req.url === '/') {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({
+        status: 'ok',
+        error: 'API failed to start',
+        message: err?.message || String(err),
+        stack: err?.stack
+      }));
+      return;
+    }
     res.writeHead(500, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({
-      error: 'API failed to start',
-      message: err?.message || String(err),
-      stack: err?.stack
-    }));
+    res.end(JSON.stringify({ error: 'API failed to start' }));
   });
   server.listen(Number(port), '0.0.0.0', () => {
     console.log(`[OATHIS] Emergency Backend running on port ${port}`);
