@@ -35,6 +35,10 @@ app.use((0, cors_1.default)({
     }
 }));
 app.use(express_1.default.json());
+// Root health endpoint for Railway default checks
+app.get("/", (req, res) => {
+    res.status(200).send("OK");
+});
 // Health endpoint (Task 1.4)
 app.get("/api/health", (req, res) => {
     res.json({ status: "ok", supabase: "connected", clerk: "configured" });
