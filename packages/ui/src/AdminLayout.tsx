@@ -25,9 +25,15 @@ export function AdminLayout({ children }: AdminLayoutProps) {
   const pathname = usePathname();
 
   return (
-    <div className="min-h-screen bg-titanium-deep text-cream font-body flex">
+    <div className="min-h-screen bg-titanium-deep text-cream font-body flex relative overflow-x-hidden">
+      {/* Background Topology Grid */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:60px_60px] [mask-image:radial-gradient(ellipse_100%_100%_at_50%_0%,#000_60%,transparent_100%)] opacity-30"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,#1f2937_0%,transparent_70%)] opacity-20"></div>
+      </div>
+
       {/* Sidebar */}
-      <aside className="w-64 glass-card m-4 rounded-xl border-titanium-border flex flex-col hidden md:flex">
+      <aside className="w-64 glass-card m-4 rounded-xl border-titanium-border flex-col hidden md:flex relative z-10 shrink-0">
         <div className="p-6 pb-2">
           <h1 className="text-xl font-display font-bold text-cream tracking-wide">DigiTwin</h1>
           <div className="text-xs text-parchment uppercase tracking-widest mt-1">ATLAS Command</div>
@@ -63,7 +69,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col p-4 md:pl-0 h-screen overflow-hidden">
+      <main className="flex-1 flex flex-col p-4 md:pl-0 h-screen overflow-hidden relative z-10">
         <header className="glass-card rounded-xl border-titanium-border mb-4 px-6 py-4 flex justify-between items-center shrink-0">
           <div className="text-parchment font-data text-sm">
             {pathname}
