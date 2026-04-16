@@ -4,7 +4,9 @@ import dotenv from "dotenv";
 import path from "path";
 
 // Load shared .env for local development
-dotenv.config({ path: path.resolve(__dirname, '../../../../../.env.shared') });
+if (process.env.NODE_ENV !== 'production') {
+  dotenv.config({ path: path.resolve(__dirname, '../../../../../.env.shared') });
+}
 dotenv.config();
 
 import ecgRouter from "./routes/ecg";

@@ -3,7 +3,9 @@ import dotenv from 'dotenv';
 import path from 'path';
 
 // Load shared env variables from the root directory
-dotenv.config({ path: path.resolve(__dirname, '../../../../../.env.shared') });
+if (process.env.NODE_ENV !== 'production') {
+  dotenv.config({ path: path.resolve(__dirname, '../../../../../.env.shared') });
+}
 dotenv.config();
 
 const supabaseUrl = process.env.ATLAS_SUPABASE_URL || '';
