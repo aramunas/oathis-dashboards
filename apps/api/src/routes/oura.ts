@@ -6,7 +6,7 @@ const router = Router();
 
 const OURA_CLIENT_ID = process.env.OURA_CLIENT_ID || '';
 const OURA_CLIENT_SECRET = process.env.OURA_CLIENT_SECRET || '';
-const REDIRECT_URI = 'https://demo-ha.oathis.com/api/oura/callback';
+const REDIRECT_URI = process.env.OURA_REDIRECT_URI || 'http://localhost:3001/api/oura/callback';
 
 router.get('/authorize', (req, res) => {
   const { subject_id } = req.query;
